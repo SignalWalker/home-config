@@ -223,7 +223,7 @@
                       inputs.modloader64.homeManagerModules.default
                       inputs.wired.homeManagerModules.default
                     ]
-                    ++ (map (file: import file) (utils.listFiles ./modules));
+                    ++ (map (file: import file) (utils.listFiles ./mod));
                   configuration = import ./cfg/home.nix;
                 } (cfgFn system)
               )
