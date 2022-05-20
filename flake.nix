@@ -60,7 +60,7 @@
       inputs.mozilla.follows = "mozilla";
     };
     xmonad-ash = {
-      url = git+file:///home/ash/projects/system/xmonad;
+      url = github:signalwalker/xmonad-config;
       inputs.nixpkgs.follows = "nixpkgs";
     };
     polybar-scripts = {
