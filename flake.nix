@@ -28,16 +28,16 @@
     };
     ## games
     archive = {
-      url = git+file:///home/ash/projects/nix/pkgs?dir=internet-archive;
+      url = github:signalwalker/nix-internet-archive;
       inputs.nixpkgs.follows = "nixpkgs";
     };
     roms = {
-      url = git+file:///home/ash/projects/nix/pkgs?dir=roms;
+      url = github:signalwalker/nix-roms;
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.archive.follows = "archive";
     };
     modloader64 = {
-      url = git+file:///home/ash/projects/nix/pkgs?dir=modloader64;
+      url = github:signalwalker/nix-modloader64;
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ## misc
@@ -55,7 +55,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ash-scripts = {
-      url = git+file:///home/ash/projects/system/scripts/rust;
+      url = github:signalwalker/scripts-rs;
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.mozilla.follows = "mozilla";
     };
