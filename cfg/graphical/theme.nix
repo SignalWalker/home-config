@@ -5,7 +5,9 @@ inputs @ {
   options,
   ...
 }:
-with builtins; {
+with builtins; let
+  std = pkgs.lib;
+in {
   config = {
     fonts.fontconfig.enable = true;
     gtk = {
@@ -16,7 +18,7 @@ with builtins; {
       };
       gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
       gtk3 = {
-        bookmarks = map (dir: "file:///${config.xdg.userDirs.extraConfig.${dir}}") (attrNames config.xdg.userDirs.extraConfig);
+        bookmarks = map (dir: "file:///${dir}") (std.attrValues config.xdg.userDirs.extraConfig);
       };
       iconTheme = {
         package = pkgs.gnome.adwaita-icon-theme;

@@ -3,32 +3,28 @@ inputs @ {
   pkgs,
   profile,
   lib,
-  username,
   ...
 }: {
   options = with lib; {};
   imports = [];
-  config =
-    if (username == "ash")
-    then {
-      accounts.email.accounts = {
-        primary = {
-          address = "ashurstwalker@gmail.com";
-          flavor = "gmail.com";
-          primary = true;
-        };
-        secondary = {
-          address = "protomith@gmail.com";
-          flavor = "gmail.com";
-        };
-        personal = {
-          address = "ash@ashwalker.net";
-        };
+  config = {
+    accounts.email.accounts = {
+      primary = {
+        address = "ashurstwalker@gmail.com";
+        flavor = "gmail.com";
+        primary = true;
       };
-      programs.git = {
-        userName = "Ash Walker";
-        userEmail = config.accounts.email.accounts.primary.address;
+      secondary = {
+        address = "protomith@gmail.com";
+        flavor = "gmail.com";
       };
-    }
-    else {};
+      personal = {
+        address = "ash@ashwalker.net";
+      };
+    };
+    programs.git = {
+      userName = "Ash Walker";
+      userEmail = config.accounts.email.accounts.primary.address;
+    };
+  };
 }

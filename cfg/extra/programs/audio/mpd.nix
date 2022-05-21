@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  profile,
   ...
 }:
 with builtins; let
@@ -21,8 +22,8 @@ in {
     };
     services.mpdris2 = {
       enable = config.services.mpd.enable;
-      notifications = true;
-      multimediaKeys = true;
+      notifications = profile.graphical;
+      multimediaKeys = false;
     };
   };
 }

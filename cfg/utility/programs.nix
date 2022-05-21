@@ -11,8 +11,6 @@ in {
   options = with lib; {};
   imports = utils.listFiles ./programs;
   config = {
-    home.packages = with pkgs; [
-      jq
-    ];
+    programs.jq.enable = true;
   };
 }

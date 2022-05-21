@@ -31,11 +31,11 @@
       url = github:signalwalker/nix-internet-archive;
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    roms = {
-      url = github:signalwalker/nix-roms;
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.archive.follows = "archive";
-    };
+    # roms = {
+    #   url = github:signalwalker/nix-roms;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.archive.follows = "archive";
+    # };
     modloader64 = {
       url = github:signalwalker/nix-modloader64;
       inputs.nixpkgs.follows = "nixpkgs";
@@ -122,7 +122,7 @@
               rnix-lsp
               ash-scripts
               # xmonad-ash
-              roms
+              # roms
               modloader64
               archive
               wired
@@ -149,84 +149,76 @@
         {}
         (attrNames self);
       baseProfile = system: {
-        extraSpecialArgs = {
-          impure = false;
-          username = "ash";
-          utils = utilsFor.${system};
-          profile = {
-            utility = false;
-            graphical = false;
-            extra = false;
-          };
-          extraInputs = {
-            inherit (inputs) polybar-scripts;
-          };
-          resources = {
-            pond = ./res/pond.png;
-          };
-        };
       };
       homeConfigs = let
-        _base = {
-          "minimal" = system: {};
-          "server" = system: {
-            extraSpecialArgs.profile = {
-              utility = true;
-            };
+        base = {
+          "minimal" = {};
+          "server".profile.utility = true;
+          "usb".profile = {
+            utility = true;
+            graphical = true;
           };
-          "usb" = system: {
-            extraSpecialArgs.profile = {
-              utility = true;
-              graphical = true;
-            };
-          };
-          "desktop" = system: {
-            extraSpecialArgs.profile = {
-              utility = true;
-              graphical = true;
-              extra = true;
-            };
+          "desktop".profile = {
+            utility = true;
+            graphical = true;
+            extra = true;
           };
         };
-        base =
-          std.mapAttrs (name: fn: system: std.recursiveUpdate (baseProfile system) (fn system))
-          _base;
       in (base
-        // (std.mapAttrs' (profile: baseFn: {
-            name = "${profile}-impure";
-            value = system: let
-              pbase = baseFn system;
-            in
-              std.recursiveUpdate pbase {extraSpecialArgs.impure = true;};
+        // (std.mapAttrs' (name: base: {
+            name = "${name}-impure";
+            value = base // {impure = true;};
           })
           base));
       mapHMConfigs = fn: std.mapAttrs fn homeConfigs;
       mapSysHmConfigs = fn: system: mapHMConfigs (user: cfgFn: fn (cfgFn system));
     in {
       formatter = std.mapAttrs (system: pkgs: pkgs.default) inputs.alejandra.packages;
+      lib = {
+        mkHomeConfig = {
+          system,
+          profile ? {},
+          impure ? false,
+        }:
+          home-manager.lib.homeManagerConfiguration {
+            inherit system;
+            username = "ash";
+            homeDirectory = "/home/ash";
+            # Update the state version as needed.
+            # See the changelog here:
+            # https://nix-community.github.io/home-manager/release-notes.html#sec-release-21.05
+            stateVersion = "22.05";
+            pkgs = nixpkgsFor.${system};
+            extraModules =
+              [
+                inputs.modloader64.homeManagerModules.default
+                inputs.wired.homeManagerModules.default
+              ]
+              ++ (map (file: import file) (utils.listFiles ./mod));
+            configuration = import ./cfg/home.nix;
+            extraSpecialArgs = {
+              inherit impure;
+              utils = utilsFor.${system};
+              profile =
+                std.recursiveUpdate {
+                  utility = false;
+                  graphical = false;
+                  extra = false;
+                }
+                profile;
+              extraInputs = {
+                inherit (inputs) polybar-scripts;
+              };
+              resources = {
+                pond = ./res/pond.png;
+              };
+            };
+          };
+      };
       homeConfigurations = genSystems (
         system: (
           mapHMConfigs (
-            profile: cfgFn:
-              home-manager.lib.homeManagerConfiguration (
-                std.recursiveUpdate {
-                  inherit system;
-                  username = "ash";
-                  homeDirectory = "/home/ash";
-                  # Update the state version as needed.
-                  # See the changelog here:
-                  # https://nix-community.github.io/home-manager/release-notes.html#sec-release-21.05
-                  stateVersion = "22.05";
-                  pkgs = nixpkgsFor.${system};
-                  extraModules =
-                    [
-                      inputs.modloader64.homeManagerModules.default
-                      inputs.wired.homeManagerModules.default
-                    ]
-                    ++ (map (file: import file) (utils.listFiles ./mod));
-                  configuration = import ./cfg/home.nix;
-                } (cfgFn system)
-              )
+            name: opts: self.lib.mkHomeConfig (opts // {inherit system;})
           )
         )
       );

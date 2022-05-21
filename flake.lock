@@ -707,29 +707,6 @@
         "type": "github"
       }
     },
-    "roms": {
-      "inputs": {
-        "archive": [
-          "archive"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1653087557,
-        "narHash": "sha256-0c2bn+rM/9DPBwleyElR89r8aLfxQP7vf/ZfsiKxIvs=",
-        "owner": "signalwalker",
-        "repo": "nix-roms",
-        "rev": "aa3fe4057a24e55f74240590fd6dd47bdb8f4009",
-        "type": "github"
-      },
-      "original": {
-        "owner": "signalwalker",
-        "repo": "nix-roms",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "alejandra": "alejandra",
@@ -744,7 +721,6 @@
         "nvimpager": "nvimpager",
         "polybar-scripts": "polybar-scripts",
         "rnix-lsp": "rnix-lsp",
-        "roms": "roms",
         "statix": "statix",
         "wired": "wired",
         "xmonad-ash": "xmonad-ash"
@@ -874,14 +850,17 @@
         "xmonad-contrib": "xmonad-contrib"
       },
       "locked": {
-        "lastModified": 1648589287,
-        "narHash": "sha256-JldwJ2YEUZUUVV14+7i/9zDStLh5DrhGokC3i071Kvw=",
-        "type": "git",
-        "url": "file:///home/ash/projects/system/xmonad"
+        "lastModified": 1653088241,
+        "narHash": "sha256-h0F1QCqpbdwFDNEZbbjJTQsslcC7HyhmsH7M2mrhnqo=",
+        "owner": "signalwalker",
+        "repo": "xmonad-config",
+        "rev": "cc363b9f3a02f70711dcc790b418508fc91d9c6a",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/ash/projects/system/xmonad"
+        "owner": "signalwalker",
+        "repo": "xmonad-config",
+        "type": "github"
       }
     },
     "xmonad-contrib": {
@@ -900,16 +879,16 @@
       "locked": {
         "lastModified": 1648588894,
         "narHash": "sha256-B9ACTk//bgiBxa/fHKvDL7HGo14Vsax1bMQInFvY+kQ=",
-        "ref": "ash",
+        "owner": "signalwalker",
+        "repo": "xmonad-contrib",
         "rev": "87e00ed0cf3148bb7897774aa3f4a0dd3517f96a",
-        "revCount": 4051,
-        "type": "git",
-        "url": "file:///home/ash/projects/system/xmonad/xmonad-contrib"
+        "type": "github"
       },
       "original": {
+        "owner": "signalwalker",
         "ref": "ash",
-        "type": "git",
-        "url": "file:///home/ash/projects/system/xmonad/xmonad-contrib"
+        "repo": "xmonad-contrib",
+        "type": "github"
       }
     },
     "z64lib": {
