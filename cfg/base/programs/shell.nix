@@ -6,40 +6,81 @@
 }: let
   prg = config.programs;
 in {
-  imports = utils.listFiles ./shell;
+  imports = utils.listNix ./shell;
 
-  home.shellAliases = {
-    ll = "${pkgs.lsd}/bin/lsd -lhF --group-dirs first --date '+%Y-%m-%d %H:%M:%S' -X";
-  };
+  config = {
+    home.packages = with pkgs; [
+      ripgrep
+      ripgrep-all
+      fd
+    ];
 
-  programs.lsd = {
-    enable = true;
-  };
+    home.shellAliases = {
+      ls = "lsd";
+      ll = "lsd -l";
+      lt = "lsd --tree";
+      la = "lsd -a";
+      lla = "lsd -la";
+    };
 
-  programs.zellij = {
-    enable = true;
-  };
+    programs.lsd = {
+      enable = true;
+      enableAliases = false;
+      # package = pkgs.lsd;
+      settings = {
+        classic = false;
+        blocks = [
+          "permission"
+          "user"
+          "group"
+          "context"
+          "size"
+          "date"
+          "name"
+        ];
+        color = {
+          when = "auto";
+          theme = "default";
+        };
+        date = "+%Y-%m-%d %H:%M:%S";
+        icons = {
+          when = "auto";
+          theme = "fancy";
+          separator = " ";
+        };
+        indicators = true;
+        sorting = {
+          column = "extension";
+          dir-grouping = "first";
+        };
+        no-symlink = false;
+        hyperlink = "auto";
+      };
+    };
 
-  programs.zoxide = {
-    enable = true;
-    enableBashIntegration = true;
-    enableFishIntegration = prg.fish.enable;
-    enableZshIntegration = prg.zsh.enable;
-  };
+    programs.zellij = {
+      enable = true;
+    };
 
-  programs.bat = {
-    enable = true;
-  };
+    programs.zoxide = {
+      enable = true;
+      enableBashIntegration = true;
+      enableFishIntegration = prg.fish.enable;
+      enableZshIntegration = prg.zsh.enable;
+    };
 
-  programs.fzf = let
-    fd = "${pkgs.fd}/bin/fd";
-  in {
-    enable = true;
-    enableBashIntegration = true;
-    enableFishIntegration = prg.fish.enable;
-    enableZshIntegration = prg.zsh.enable;
-    defaultCommand = "${fd} --type f";
-    fileWidgetCommand = "${fd} --type f --hidden --follow --exclude '.git'";
-    changeDirWidgetCommand = "${fd} --type d --hidden --follow --exclude '.git'";
+    programs.bat = {
+      enable = true;
+    };
+
+    programs.fzf = {
+      enable = true;
+      enableBashIntegration = true;
+      enableFishIntegration = prg.fish.enable;
+      enableZshIntegration = prg.zsh.enable;
+      defaultCommand = "fd --type f";
+      fileWidgetCommand = "fd --type f --hidden --follow --exclude '.git'";
+      changeDirWidgetCommand = "fd --type d --hidden --follow --exclude '.git'";
+    };
   };
 }

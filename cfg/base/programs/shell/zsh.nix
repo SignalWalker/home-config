@@ -28,6 +28,7 @@ in {
       ignoreDups = true;
       ignoreSpace = true;
     };
+    shellAliases = config.home.shellAliases;
     plugins = [
       {
         src = pkgs.zsh-fzf-tab.src;
@@ -54,8 +55,7 @@ in {
     # }
     # export FZF_DEFAULT_COMMAND='${pkgs.fd}/bin/fd --type f'
     initExtra = ''
-      # -- initExtra --
-      export LS_COLORS=$(vivid generate gruvbox-dark-hard)
+      export LS_COLORS=$(${pkgs.vivid}/bin/vivid generate gruvbox-dark-hard)
 
       zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
       zstyle ':completion:*:descriptions' format '[%d]'
@@ -67,7 +67,6 @@ in {
       bindkey "^[[3~" delete-char
       bindkey "^[[H" beginning-of-line
       bindkey "^[[F" end-of-line
-      # -- end initExtra --
     '';
   };
 }

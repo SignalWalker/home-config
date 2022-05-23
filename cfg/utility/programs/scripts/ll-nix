@@ -1,0 +1,3 @@
+#! /usr/bin/env zsh
+
+lsd -lhF --group-dirs first "$(nix eval --raw ${argv[0]})/${argv[1]}"

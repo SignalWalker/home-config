@@ -9,11 +9,32 @@ inputs @ {
   ...
 }: {
   config = {
+    xdg.configFile = lib.mkIf config.programs.kitty.enable {
+      "kitty/open-actions.conf".source = ./kitty/open-actions.conf;
+    };
+    home.file = lib.mkIf config.programs.kitty.enable {
+      ".local/bin/hg" = {
+        executable = true;
+        source = ./kitty/hg;
+      };
+    };
+    programs.zsh = lib.mkIf config.programs.kitty.enable {
+      initExtra = ''
+        compdef _rg hg
+        if [[ "$TERM" = "${config.programs.kitty.settings.term}" ]]; then
+          alias ssh="kitty +kitten ssh"
+          alias icat="kitty +kitten icat"
+          alias kdiff="kitty +kitten diff"
+          alias ksync="kitty +kitten transfer"
+          alias kdeltas="kitty +kitten transfer --transmit-deltas"
+        fi
+      '';
+    };
     programs.kitty = {
-      enable = true;
+      enable = profile.graphical;
       package =
         if impure
-        then (utils.wrapSystemApp {app = "kitty";})
+        then (pkgs.wrapSystemApp {app = "kitty";})
         else pkgs.kitty;
       environment = {};
       font = {

@@ -7,17 +7,7 @@ inputs @ {
   imports = utils.listFiles ./programs;
   config = {
     home.packages = with pkgs; [
-      # terminal
-      ## meta
-      vivid
-      mosh
-      ## util
       btop
-      ripgrep
-      ripgrep-all
-      fd
-      ## debug
-      strace
     ];
 
     programs.git = {
@@ -40,8 +30,6 @@ inputs @ {
       enable = true;
       homedir = "${config.xdg.configHome}/gnupg";
     };
-
-    services.kdeconnect.enable = true;
 
     programs.info.enable = true;
   };

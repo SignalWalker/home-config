@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+with builtins; {
   programs.starship = let
     prg = config.programs;
   in {
@@ -20,16 +21,16 @@
         format = "\\[${symbol}\\]";
       };
 
-      time = rec {
+      time = {
         disabled = false;
         format = "⏱ [$time]($style)";
       };
 
-      username = rec {
+      username = {
         format = "\\[[$user]($style)\\]";
       };
 
-      status = rec {
+      status = {
         disabled = false;
       };
 
@@ -39,13 +40,13 @@
         format = "\\[${symbol}[$ram( | $swap)]($style)\\]";
       };
 
-      directory = rec {
+      directory = {
         truncate_to_repo = false;
         read_only = " ";
         fish_style_pwd_dir_length = 2;
       };
 
-      shell = rec {
+      shell = {
         disabled = false;
         fish_indicator = "";
         zsh_indicator = "↯";
@@ -53,23 +54,31 @@
         nu_indicator = "ǂ";
       };
 
-      shlvl = rec {
+      shlvl = {
         # disabled = false;
         symbol = " ";
       };
 
-      battery.display = rec {
-        threshold = 100;
-        style = "yellow";
+      battery = {
+        display = [
+          {
+            threshold = 10;
+            style = "bold red";
+          }
+          {
+            threshold = 100;
+            style = "yellow";
+          }
+        ];
       };
 
-      character = rec {
+      character = {
         success_symbol = "[☽](green)";
         error_symbol = "[☽](red)";
         vicmd_symbol = "[☾](green)";
       };
 
-      cmd_duration = rec {
+      cmd_duration = {
         format = "\\[[⏱ $duration]($style)\\]";
       };
 
@@ -80,11 +89,11 @@
         format = "\\[[${symbol}($profile)(\\($region\\))(\\[$duration\\])]($style)\\]";
       };
 
-      cmake = rec {
+      cmake = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
-      cobol = rec {
+      cobol = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
@@ -93,7 +102,7 @@
         format = "\\[[${symbol}$environment]($style)\\]";
       };
 
-      crystal = rec {
+      crystal = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
@@ -102,7 +111,7 @@
         format = "\\[[${symbol}($version)]($style)\\]";
       };
 
-      deno = rec {
+      deno = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
@@ -111,7 +120,7 @@
         format = "\\[[${symbol}$context]($style)\\]";
       };
 
-      dotnet = rec {
+      dotnet = {
         format = "\\[[$symbol($version)(🎯 $tfm)]($style)\\]";
       };
 
@@ -125,11 +134,11 @@
         format = "\\[[${symbol}($version)]($style)\\]";
       };
 
-      erlang = rec {
+      erlang = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
-      gcloud = rec {
+      gcloud = {
         format = "\\[[$symbol$account(@$domain)(\\($region\\))]($style)\\]";
       };
 
@@ -138,7 +147,7 @@
         format = "\\[[${symbol}$branch]($style)\\]";
       };
 
-      git_status = rec {
+      git_status = {
         format = "([\\[$all_status$ahead_behind\\]]($style))";
       };
 
@@ -147,7 +156,7 @@
         format = "\\[[${symbol}($version)]($style)\\]";
       };
 
-      helm = rec {
+      helm = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
@@ -166,15 +175,15 @@
         format = "\\[[${symbol}($version)]($style)\\]";
       };
 
-      kotlin = rec {
+      kotlin = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
-      kubernetes = rec {
+      kubernetes = {
         format = "\\[[$symbol$context( \\($namespace\\))]($style)\\]";
       };
 
-      lua = rec {
+      lua = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
@@ -193,11 +202,11 @@
         format = "\\[[${symbol}($version)]($style)\\]";
       };
 
-      ocaml = rec {
+      ocaml = {
         format = "\\[[$symbol($version)(\\($switch_indicator$switch_name\\))]($style)\\]";
       };
 
-      openstack = rec {
+      openstack = {
         format = "\\[[$symbol$cloud(\\($project\\))]($style)\\]";
       };
 
@@ -216,11 +225,11 @@
         format = "\\[[${symbol}($version)]($style)\\]";
       };
 
-      pulumi = rec {
+      pulumi = {
         format = "\\[[$symbol$stack]($style)\\]";
       };
 
-      purescript = rec {
+      purescript = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
@@ -229,7 +238,7 @@
         # format = "\\[[${symbol}${pyenv_prefix}(${version})(\\($virtualenv\\))]($style)\\]"
       };
 
-      red = rec {
+      red = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
@@ -253,19 +262,19 @@
         format = "\\[[${symbol}($version)]($style)\\]";
       };
 
-      terraform = rec {
+      terraform = {
         format = "\\[[$symbol$workspace]($style)\\]";
       };
 
-      vagrant = rec {
+      vagrant = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
-      vlang = rec {
+      vlang = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
 
-      zig = rec {
+      zig = {
         format = "\\[[$symbol($version)]($style)\\]";
       };
     };

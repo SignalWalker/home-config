@@ -27,7 +27,7 @@ in {
       enable = cfg.compositor.enable;
       package =
         if impure
-        then (utils.wrapSystemApp {app = "picom";})
+        then (pkgs.wrapSystemApp {app = "picom";})
         else pkgs.picom;
     };
     programs.autorandr = let

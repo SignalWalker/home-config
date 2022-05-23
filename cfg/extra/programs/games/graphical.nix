@@ -20,6 +20,9 @@ in {
     ];
   in
     lib.optionalAttrs profile.graphical {
+      home.packages = with pkgs; [
+        mgba
+      ];
       programs.modloader64-gui = {
         enable = true;
         cores = attrValues pkgs.modloader64.cores;

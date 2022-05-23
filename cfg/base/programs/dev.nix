@@ -15,6 +15,11 @@ in {
   config = {
     home.packages = with pkgs; ([
         gitoxide
+        ## git
+        gh
+        glab
+        ## debug
+        strace
       ]
       ++ (lib.optionals profile.graphical [
         zeal

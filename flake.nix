@@ -28,16 +28,16 @@
     };
     ## games
     archive = {
-      url = github:signalwalker/nix-internet-archive;
+      url = github:signalwalker/internet-archive.nix;
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # roms = {
-    #   url = github:signalwalker/nix-roms;
+    #   url = gitlab:signalwalker/roms.nix;
     #   inputs.nixpkgs.follows = "nixpkgs";
     #   inputs.archive.follows = "archive";
     # };
     modloader64 = {
-      url = github:signalwalker/nix-modloader64;
+      url = github:signalwalker/modloader64.nix;
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ## misc
@@ -59,17 +59,20 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.mozilla.follows = "mozilla";
     };
-    xmonad-ash = {
-      url = github:signalwalker/xmonad-config;
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # xmonad-ash = {
+    #   url = github:signalwalker/xmonad-config;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     polybar-scripts = {
       url = github:polybar/polybar-scripts;
       flake = false;
     };
     wired = {
-      # url = github:Toqozz/wired-notify;
-      url = git+file:///home/ash/src/wired-notify;
+      url = github:Toqozz/wired-notify;
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lsd = {
+      url = github:SignalWalker/lsd;
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -86,49 +89,11 @@
       utils = import ./src/utils.nix {inherit nixpkgs;};
       systems = ["x86_64-linux"];
       genSystems = fn: std.genAttrs systems fn;
-      # some = value: { hasVal = true; inherit value; };
-      # none = value { hasVal = false; value = null; };
-      filterMap = fn: vals:
-        std.foldl
-        (
-          res: val: let
-            fres = fn val;
-          in
-            if fres.isSome
-            then (res ++ [fres.value])
-            else res
-        )
-        []
-        vals;
       nixpkgsFor = genSystems (system:
         import nixpkgs {
           inherit system;
-          overlays =
-            [
-              mozilla.overlays.rust
-              mozilla.overlays.firefox
-            ]
-            ++ filterMap
-            (flake: {
-              isSome = flake ? overlay || (flake ? overlays && (flake.overlays ? ${system} || flake.overlays ? default));
-              value = flake.overlay or (flake.overlays.default or flake.overlays.${system});
-            })
-            (with inputs; [
-              nix
-              neovim
-              nvimpager
-              statix
-              alejandra
-              rnix-lsp
-              ash-scripts
-              # xmonad-ash
-              # roms
-              modloader64
-              archive
-              wired
-            ]);
+          overlays = self.lib.mkDefaultOverlayList system;
         });
-      utilsFor = std.mapAttrs (system: pkgs: import ./src/utils.nix {inherit nixpkgs pkgs;}) nixpkgsFor;
       mapSelf =
         std.foldl
         (
@@ -148,8 +113,6 @@
         )
         {}
         (attrNames self);
-      baseProfile = system: {
-      };
       homeConfigs = let
         base = {
           "minimal" = {};
@@ -172,33 +135,33 @@
           base));
       mapHMConfigs = fn: std.mapAttrs fn homeConfigs;
       mapSysHmConfigs = fn: system: mapHMConfigs (user: cfgFn: fn (cfgFn system));
+      overlayInputs = removeAttrs inputs [ "nixpkgs" "home-manager" "mozilla" ];
     in {
       formatter = std.mapAttrs (system: pkgs: pkgs.default) inputs.alejandra.packages;
-      lib = {
-        mkHomeConfig = {
-          system,
-          profile ? {},
-          impure ? false,
+      overlays.default = final: prev: {
+        wrapSystemApp = {
+          app,
+          pname ? "system-${app}",
+          syspath ? "/usr/bin/${app}",
         }:
-          home-manager.lib.homeManagerConfiguration {
-            inherit system;
-            username = "ash";
-            homeDirectory = "/home/ash";
-            # Update the state version as needed.
-            # See the changelog here:
-            # https://nix-community.github.io/home-manager/release-notes.html#sec-release-21.05
-            stateVersion = "22.05";
-            pkgs = nixpkgsFor.${system};
-            extraModules =
-              [
-                inputs.modloader64.homeManagerModules.default
-                inputs.wired.homeManagerModules.default
-              ]
-              ++ (map (file: import file) (utils.listFiles ./mod));
-            configuration = import ./cfg/home.nix;
+          final.runCommandLocal pname {} ''
+            mkdir -p $out/bin
+            ln -sT ${syspath} $out/bin/${app}
+          '';
+      };
+      lib =
+        {
+          mkDefaultOverlayList = system: (self.lib.mkOverlayList system (attrValues overlayInputs)) ++ [
+            mozilla.overlays.rust
+            mozilla.overlays.firefox
+          ];
+          mkBaseModule = {
+            system,
+            profile ? {},
+            impure ? false,
+          }: {
             extraSpecialArgs = {
-              inherit impure;
-              utils = utilsFor.${system};
+              inherit utils impure;
               profile =
                 std.recursiveUpdate {
                   utility = false;
@@ -213,8 +176,59 @@
                 pond = ./res/pond.png;
               };
             };
+            extraModules =
+              [
+                inputs.modloader64.homeManagerModules.default
+                inputs.wired.homeManagerModules.default
+              ]
+              ++ (map (file: import file) (utils.listFiles ./mod));
           };
-      };
+          mkNixOSModule = args @ {
+            system,
+            profile ? {},
+            impure ? false,
+          }: let
+            base = self.lib.mkBaseModule args;
+          in {
+            home-manager = {
+              inherit (base) extraSpecialArgs;
+              useGlobalPkgs = false;
+              useUserPackages = true;
+              sharedModules =
+                base.extraModules
+                ++ [
+                  ({
+                    config,
+                    pkgs,
+                    ...
+                  }: {
+                    nixpkgs.overlays = self.lib.mkDefaultOverlayList system;
+                  })
+                ];
+              users."ash" = import ./cfg/home.nix;
+            };
+          };
+          mkHomeConfig = args @ {
+            system,
+            profile ? {},
+            impure ? false,
+          }: let
+            base = self.lib.mkBaseModule args;
+          in
+            home-manager.lib.homeManagerConfiguration (base
+              // {
+                inherit system;
+                username = "ash";
+                homeDirectory = "/home/ash";
+                # Update the state version as needed.
+                # See the changelog here:
+                # https://nix-community.github.io/home-manager/release-notes.html#sec-release-21.05
+                stateVersion = "22.05";
+                pkgs = nixpkgsFor.${system};
+                configuration = import ./cfg/home.nix;
+              });
+        }
+        // utils;
       homeConfigurations = genSystems (
         system: (
           mapHMConfigs (

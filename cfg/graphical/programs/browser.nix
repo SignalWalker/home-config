@@ -11,6 +11,9 @@ with builtins; let
   };
 in {
   config = {
+    systemd.user.sessionVariables = {
+      BROWSER = "firefox";
+    };
     programs.qutebrowser = {
       enable = true;
     };

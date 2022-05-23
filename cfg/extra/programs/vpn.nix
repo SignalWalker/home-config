@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  profile,
   ...
 }:
 with builtins; let
@@ -10,10 +9,8 @@ with builtins; let
 in {
   options = with lib; {};
   imports = [];
-  config = lib.optionalAttrs profile.graphical {
+  config = {
     home.packages = with pkgs; [
-      discord-canary
-      element-desktop
     ];
   };
 }

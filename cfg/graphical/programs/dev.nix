@@ -3,13 +3,14 @@
   pkgs,
   lib,
   impure,
+  utils,
   ...
 }:
 with builtins; let
   std = pkgs.lib;
 in {
   options = with lib; {};
-  imports = [];
+  imports = utils.listNix ./dev;
   config = {
     home.packages = std.optional (!impure) [
       pkgs.neovide
