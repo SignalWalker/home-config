@@ -28,10 +28,45 @@ in rec {
     ;
 
   inherit listFiles';
+  fileExtension = path: let
+    ext = match "^.+\\.([^.]+)$" path;
+  in
+    if ext != null
+    then head ext
+    else null;
+  fileName' = path: ext: replaceStrings [".${ext}"] [""] (baseNameOf path);
+  fileName = path: let
+    ext = fileExtension path;
+  in
+    if ext != null
+    then fileName' path ext
+    else baseNameOf path;
+  fileParts = path: let
+    ext = fileExtension path;
+    dir = dirOf path;
+  in
+    (
+      if ext != null
+      then {
+        name = fileName' path ext;
+        inherit ext;
+      }
+      else {
+        name = baseNameOf path;
+      }
+    )
+    // (
+      if dir != ""
+      then {
+        inherit dir;
+      }
+      else {}
+    );
   listFiles = dir: map (name: dir + "/${name}") (listFiles' dir);
-  listNix = dir: map (name: dir + "/${name}") (listFiles' dir);
+  listNix' = dir: filter (file: file ? ext && file.ext == "nix") (map fileParts (listFiles' dir));
+  listNix = dir: map (file: dir + "/${file.name}.nix") (listNix' dir);
+  listNixNames = dir: map (file: file.name) (listNix' dir);
 
-  listContains = obj: list: any (el: el == obj) list;
   mkOutputList' = let
     oldDefaults = {
       "overlays" = "overlay";
@@ -55,7 +90,7 @@ in rec {
         else []
       )
       ++ (
-        if ((oldDefaults ? "${output}") && (flake ? "${oldDefaults.${output}}") && (listContains "default" keys))
+        if ((oldDefaults ? "${output}") && (flake ? "${oldDefaults.${output}}") && (elem "default" keys))
         then [flake.${oldDefaults.${output}}]
         else []
       );
