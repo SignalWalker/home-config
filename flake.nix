@@ -202,6 +202,7 @@
               [
                 inputs.modloader64.homeManagerModules.default
                 inputs.wired.homeManagerModules.default
+                inputs.ash-scripts.homeManagerModules.default
               ]
               ++ (map (file: import file) (utils.listFiles ./mod));
           };
