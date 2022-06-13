@@ -5,7 +5,6 @@ inputs @ {
   profile,
   utils,
   impure,
-  extraInputs,
   ...
 }:
 with builtins; let

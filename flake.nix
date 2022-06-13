@@ -16,7 +16,16 @@
       url = github:mozilla/nixpkgs-mozilla;
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ## neovim
+    ## dev
+    direnv = {
+      url = github:direnv/direnv;
+      flake = false;
+    };
+    nix-direnv = {
+      url = github:nix-community/nix-direnv;
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    ### neovim
     neovim = {
       url = github:neovim/neovim?dir=contrib;
       inputs.nixpkgs.follows = "nixpkgs";
@@ -72,7 +81,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lsd = {
-      url = github:SignalWalker/lsd;
+      url = gitlab:SignalWalker/lsd;
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -135,7 +144,20 @@
           base));
       mapHMConfigs = fn: std.mapAttrs fn homeConfigs;
       mapSysHmConfigs = fn: system: mapHMConfigs (user: cfgFn: fn (cfgFn system));
-      overlayInputs = removeAttrs inputs [ "nixpkgs" "home-manager" "mozilla" ];
+      rawInputs = {
+        inherit (inputs) polybar-scripts direnv;
+      };# std.filterAttrs (input: attrs: !(attrs.flake or true)) inputs;
+      overlayInputs = removeAttrs inputs ([
+          "nixpkgs"
+          "home-manager"
+          "mozilla"
+        ]
+        ++ (attrNames rawInputs));
+
+      # Update the state version as needed.
+      # See the changelog here:
+      # https://nix-community.github.io/home-manager/release-notes.html#sec-release-21.05
+      stateVersion = "22.11";
     in {
       formatter = std.mapAttrs (system: pkgs: pkgs.default) inputs.alejandra.packages;
       overlays.default = final: prev: {
@@ -151,10 +173,12 @@
       };
       lib =
         {
-          mkDefaultOverlayList = system: (self.lib.mkOverlayList system (attrValues overlayInputs)) ++ [
-            mozilla.overlays.rust
-            mozilla.overlays.firefox
-          ];
+          mkDefaultOverlayList = system:
+            (self.lib.mkOverlayList system (attrValues overlayInputs))
+            ++ [
+              mozilla.overlays.rust
+              mozilla.overlays.firefox
+            ];
           mkBaseModule = {
             system,
             profile ? {},
@@ -169,9 +193,7 @@
                   extra = false;
                 }
                 profile;
-              extraInputs = {
-                inherit (inputs) polybar-scripts;
-              };
+              flakeInputs = inputs;
               resources = {
                 pond = ./res/pond.png;
               };
@@ -190,22 +212,26 @@
           }: let
             base = self.lib.mkBaseModule args;
           in {
-            home-manager = {
-              inherit (base) extraSpecialArgs;
-              useGlobalPkgs = false;
-              useUserPackages = true;
-              sharedModules =
-                base.extraModules
-                ++ [
-                  ({
-                    config,
-                    pkgs,
-                    ...
-                  }: {
-                    nixpkgs.overlays = self.lib.mkDefaultOverlayList system;
-                  })
-                ];
-              users."ash" = import ./cfg/home.nix;
+            imports = [home-manager.nixosModules.home-manager];
+            config = {
+              home-manager = {
+                inherit (base) extraSpecialArgs;
+                useGlobalPkgs = false;
+                useUserPackages = true;
+                sharedModules =
+                  base.extraModules
+                  ++ [
+                    ({
+                      config,
+                      pkgs,
+                      ...
+                    }: {
+                      home.stateVersion = stateVersion;
+                      nixpkgs.overlays = self.lib.mkDefaultOverlayList system;
+                    })
+                  ];
+                users."ash" = import ./cfg/home.nix;
+              };
             };
           };
           mkHomeConfig = args @ {
@@ -217,13 +243,9 @@
           in
             home-manager.lib.homeManagerConfiguration (base
               // {
-                inherit system;
+                inherit system stateVersion;
                 username = "ash";
                 homeDirectory = "/home/ash";
-                # Update the state version as needed.
-                # See the changelog here:
-                # https://nix-community.github.io/home-manager/release-notes.html#sec-release-21.05
-                stateVersion = "22.05";
                 pkgs = nixpkgsFor.${system};
                 configuration = import ./cfg/home.nix;
               });

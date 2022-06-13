@@ -46,7 +46,7 @@ inputs @ {
       settings = {
         # scrollback
         scrollback_lines = 10000;
-        scrollback_pager = "$PAGER";
+        scrollback_pager = "less --chop-long-lines --RAW-CONTROL-CHARS +INPUT_LINE_NUMBER";
         scrollback_pager_history_size = 0;
         scrollback_fill_enlarged_window = true;
         wheel_scroll_multiplier = "5.0";
@@ -59,7 +59,7 @@ inputs @ {
         visual_bell_duration = "0.0";
         window_alert_on_bell = true;
         bell_on_tab = "🔔 ";
-        command_on_bell = "sh -c 'notify-send -i ${resources.pond} -c terminal,bell -a kitty $KITTY_CHILD_CMDLINE'";
+        command_on_bell = "sh -c 'notify-send -h string:x-dunst-stack-tag:terminal-bell -i ${resources.pond} -c terminal,bell -a kitty $KITTY_CHILD_CMDLINE'";
         # advanced
         shell = ".";
         editor = ".";

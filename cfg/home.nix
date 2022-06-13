@@ -5,36 +5,26 @@ inputs @ {
   profile,
   ...
 }:
-with builtins; {
+with builtins; let
+  std = lib;
+in {
   options = {};
   imports =
     [
       ./base.nix
     ]
     ++ (
-      if profile.utility
-      then [
-        ./utility.nix
-      ]
-      else []
+      std.optional profile.utility ./utility.nix
     )
     ++ (
-      if profile.graphical
-      then [
-        ./graphical.nix
-      ]
-      else []
+      std.optional profile.graphical ./graphical.nix
     )
     ++ (
-      if profile.extra
-      then [
-        ./extra.nix
-      ]
-      else []
+      std.optional profile.extra ./extra.nix
     );
 
   config = {
-    programs.home-manager.enable = false;
+    programs.home-manager.enable = true;
     home.enableNixpkgsReleaseCheck = true;
     manual = {
       html.enable = true;

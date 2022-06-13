@@ -25,6 +25,7 @@ with builtins; {
     SYSTEMCTL_SHENV_SENTINEL = "sourced";
     EDITOR = "nvim";
     VISUAL = "nvim";
+    # PAGER = "nvimpager";
     inherit DEVKITPRO;
     DEVKITARM = "${DEVKITPRO}/devkitARM";
     DEVKITPPC = "${DEVKITPRO}/devkitPPC";

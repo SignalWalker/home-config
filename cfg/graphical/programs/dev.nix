@@ -12,9 +12,11 @@ in {
   options = with lib; {};
   imports = utils.listNix ./dev;
   config = {
-    home.packages = std.optional (!impure) [
+    home.packages = (with pkgs; [
+      zeal
+    ]) ++ (std.optionals (!impure) [
       pkgs.neovide
-    ];
+    ]);
     xdg.desktopEntries = {
       neovide-multigrid = {
         type = "Application";

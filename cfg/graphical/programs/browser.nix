@@ -15,7 +15,7 @@ in {
       BROWSER = "firefox";
     };
     programs.qutebrowser = {
-      enable = true;
+      enable = false;
     };
     programs.firefox = let
       searchMarks = std.mapAttrs' (name: settings:

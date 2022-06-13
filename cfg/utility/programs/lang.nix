@@ -12,6 +12,6 @@
     zig
     zls
     # rust
-    latest.rustChannels.nightly.rust
+    # latest.rustChannels.nightly.rust
   ];
 }

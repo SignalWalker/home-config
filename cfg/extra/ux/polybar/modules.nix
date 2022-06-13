@@ -2,12 +2,12 @@
   config,
   pkgs,
   lib,
-  extraInputs,
+  flakeInputs,
   ...
 }:
 with builtins; let
   std = pkgs.lib;
-  scripts = "${extraInputs.polybar-scripts}/polybar-scripts";
+  scripts = "${flakeInputs.polybar-scripts}/polybar-scripts";
 in
   std.mapAttrs' (module: settings: std.nameValuePair "module/${module}" settings) {
     # system
