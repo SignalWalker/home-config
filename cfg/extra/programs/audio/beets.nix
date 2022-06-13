@@ -14,6 +14,7 @@ in {
   in {
     programs.beets = {
       enable = true;
+      package = pkgs.beetsPackages.beets-unstable;
       settings = {
         color = true;
         directory = "${music}/library";
@@ -63,7 +64,6 @@ in {
           "lastimport"
           "scrub"
           "fetchart"
-          "bandcamp"
         ];
         lyrics.auto = false;
         chroma = {
