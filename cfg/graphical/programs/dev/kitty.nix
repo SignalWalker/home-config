@@ -59,7 +59,7 @@ inputs @ {
         visual_bell_duration = "0.0";
         window_alert_on_bell = true;
         bell_on_tab = "🔔 ";
-        command_on_bell = "sh -c 'notify-send -h string:x-dunst-stack-tag:terminal-bell -i ${resources.pond} -c terminal,bell -a kitty $KITTY_CHILD_CMDLINE'";
+        # command_on_bell = "sh -c 'notify-send -h string:x-dunst-stack-tag:terminal-bell -i ${resources.pond} -c terminal,bell -a kitty $KITTY_CHILD_CMDLINE'";
         # advanced
         shell = ".";
         editor = ".";
