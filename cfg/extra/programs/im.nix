@@ -13,7 +13,7 @@ in {
   config = lib.optionalAttrs profile.graphical {
     home.packages = with pkgs; [
       discord-canary
-      # element-desktop
+      element-desktop
     ];
   };
 }

@@ -10,7 +10,7 @@ with builtins; let
 in {
   config = {
     programs.quodlibet = {
-      enable = profile.graphical;
+      enable = false; # profile.graphical;
       package = pkgs.quodlibet-full;
     };
     programs.ncmpcpp = {

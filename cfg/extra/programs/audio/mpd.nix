@@ -19,6 +19,15 @@ in {
       musicDirectory = "${music}/library";
       playlistDirectory = "${music}/playlists";
       network.startWhenNeeded = true;
+      network.listenAddress = "[::1]:6600";
+      extraConfig = ''
+        bind_to_address "@mpd"
+        auto_update "yes"
+        audio_output {
+          type "pipewire"
+          name "pipewire audio"
+        }
+      '';
     };
     services.mpdris2 = {
       enable = config.services.mpd.enable;

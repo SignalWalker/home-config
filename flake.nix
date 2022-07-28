@@ -146,7 +146,7 @@
       mapSysHmConfigs = fn: system: mapHMConfigs (user: cfgFn: fn (cfgFn system));
       rawInputs = {
         inherit (inputs) polybar-scripts direnv;
-      };# std.filterAttrs (input: attrs: !(attrs.flake or true)) inputs;
+      }; # std.filterAttrs (input: attrs: !(attrs.flake or true)) inputs;
       overlayInputs = removeAttrs inputs ([
           "nixpkgs"
           "home-manager"
@@ -198,7 +198,7 @@
                 pond = ./res/pond.png;
               };
             };
-            extraModules =
+            modules =
               [
                 inputs.modloader64.homeManagerModules.default
                 inputs.wired.homeManagerModules.default
@@ -244,11 +244,17 @@
           in
             home-manager.lib.homeManagerConfiguration (base
               // {
-                inherit system stateVersion;
-                username = "ash";
-                homeDirectory = "/home/ash";
                 pkgs = nixpkgsFor.${system};
-                configuration = import ./cfg/home.nix;
+                modules = base.modules ++ [
+                  {
+                    home = {
+                      inherit stateVersion;
+                      username = "ash";
+                      homeDirectory = "/home/ash";
+                    };
+                  }
+                  (import ./cfg/home.nix)
+                ];
               });
         }
         // utils;
