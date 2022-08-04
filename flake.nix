@@ -215,6 +215,7 @@
                 inputs.wired.homeManagerModules.default
                 inputs.ash-scripts.homeManagerModules.default
                 inputs.wayland.homeManagerModules.default
+                inputs.zeal.homeManagerModules.default
               ]
               ++ (map (file: import file) (utils.listFiles ./mod));
           };
