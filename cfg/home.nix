@@ -29,6 +29,10 @@ in {
     manual = {
       html.enable = true;
       manpages.enable = true;
+      json.enable = true;
+    };
+    news = {
+      display = "notify";
     };
   };
 }

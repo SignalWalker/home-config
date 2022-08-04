@@ -9,7 +9,7 @@
     };
     # inputs
     nix = {
-      url = github:nixos/nix?ref=2.8.0;
+      url = github:nixos/nix/latest-release;
       inputs.nixpkgs.follows = "nixpkgs";
     };
     mozilla = {
@@ -81,8 +81,19 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lsd = {
-      url = gitlab:SignalWalker/lsd;
+      url = github:SignalWalker/lsd;
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # custom modules
+    wayland = {
+      url = github:signalwalker/hm-wayland;
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.alejandra.follows = "alejandra";
+    };
+    zeal = {
+      url = github:signalwalker/hm-zeal;
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.alejandra.follows = "alejandra";
     };
   };
 
@@ -203,6 +214,7 @@
                 inputs.modloader64.homeManagerModules.default
                 inputs.wired.homeManagerModules.default
                 inputs.ash-scripts.homeManagerModules.default
+                inputs.wayland.homeManagerModules.default
               ]
               ++ (map (file: import file) (utils.listFiles ./mod));
           };
@@ -245,16 +257,18 @@
             home-manager.lib.homeManagerConfiguration (base
               // {
                 pkgs = nixpkgsFor.${system};
-                modules = base.modules ++ [
-                  {
-                    home = {
-                      inherit stateVersion;
-                      username = "ash";
-                      homeDirectory = "/home/ash";
-                    };
-                  }
-                  (import ./cfg/home.nix)
-                ];
+                modules =
+                  base.modules
+                  ++ [
+                    {
+                      home = {
+                        inherit stateVersion;
+                        username = "ash";
+                        homeDirectory = "/home/ash";
+                      };
+                    }
+                    (import ./cfg/home.nix)
+                  ];
               });
         }
         // utils;

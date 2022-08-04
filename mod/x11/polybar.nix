@@ -9,12 +9,15 @@ inputs @ {
 }:
 with builtins; let
   std = pkgs.lib;
+  cfg = config.services.X11;
 in {
-  options = with lib; {};
+  options.services.X11.taskbar = with lib; {
+    enable = mkEnableOption "task/status bar";
+  };
   imports = [];
-  config = {
+  config = lib.mkIf (cfg.enable && cfg.taskbar.enable) {
     services.polybar = {
-      enable = profile.graphical;
+      enable = cfg.taskbar.enable;
       script = ""; # handled by xmonad
       package = pkgs.polybar.override {
         alsaSupport = true;

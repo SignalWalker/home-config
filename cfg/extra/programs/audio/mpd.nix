@@ -19,9 +19,13 @@ in {
       musicDirectory = "${music}/library";
       playlistDirectory = "${music}/playlists";
       network.startWhenNeeded = true;
-      network.listenAddress = "[::1]:6600";
+      network.listenAddress = "127.0.0.1";
+      network.port = 6600;
       extraConfig = ''
-        bind_to_address "@mpd"
+        zeroconf_enabled "yes"
+        zeroconf_name "MPD @ %h"
+
+        restore_paused "yes"
         auto_update "yes"
         audio_output {
           type "pipewire"

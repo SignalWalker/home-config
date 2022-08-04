@@ -42,10 +42,7 @@ in {
       package = pkgs.vanilla-dmz;
       name = "Vanilla-DMZ-AA";
       gtk.enable = true;
-      x11 = {
-        enable = true;
-        defaultCursor = "left_ptr";
-      };
+      size = 24;
     };
   };
 }

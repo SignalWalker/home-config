@@ -76,11 +76,13 @@ with builtins; let
   color = r: g: b: a: struct' "Color" {inherit r g b a;};
   hex = h: struct' "Color" {hex = h;};
 in {
-  options = with lib; {};
+  options.services.X11.wired = with lib; {
+    enable = (mkEnableOption "Wired Notification Daemon") // {default = true;};
+  };
   imports = [];
-  config = {
+  config = lib.mkIf (config.services.X11.enable && config.services.X11.wired.enable) {
     services.wired = {
-      enable = true;
+      enable = config.services.X11.wired.enable;
       config = ./wired/wired.ron;
       #config = pkgs.writeText "wired.ron" (toRON (struct {
       #  max_notifications = 0;
