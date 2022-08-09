@@ -37,10 +37,8 @@ inputs @ {
         then (pkgs.wrapSystemApp {app = "kitty";})
         else pkgs.kitty;
       environment = {};
-      font = {
-        package = pkgs.iosevka;
-        name = "Iosevka";
-        size = 10;
+      font = let font = (config.theme.font.mono // { size = 10; }); in {
+        inherit (font) name package size;
       };
       theme = "Gruvbox Material Dark Hard";
       settings = {

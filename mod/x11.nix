@@ -8,11 +8,6 @@ inputs @ {
 }:
 with builtins; let
   std = pkgs.lib;
-  dunstFont = {
-    pkg = pkgs.curie;
-    name = "curie";
-    size = 8;
-  };
 in {
   options.services.X11 = with inputs.lib; {
     enable = mkEnableOption "X11-specific configuration.";

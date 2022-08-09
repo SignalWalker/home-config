@@ -16,7 +16,7 @@ in {
     programs.rofi = {
       enable = cfg.rofi.enable;
       configPath = "${config.xdg.configHome}/rofi/config.rasi";
-      font = "Iosevka 10";
+      font = "${config.theme.font.mono.name} 10";
       terminal = "kitty";
       theme = "gruvbox-dark-hard";
       extraConfig = {

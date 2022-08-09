@@ -5,13 +5,23 @@
   profile,
   ...
 }:
-with builtins; {
-  config = lib.mkIf profile.graphical {
+with builtins; let
+  cfg = config.services.X11.xsession;
+in {
+  options.services.X11.xsession = with lib; {
+    startupCommands = mkOption {
+      type = types.lines;
+      default = "";
+    };
+  };
+  config = lib.mkIf config.services.X11.enable {
     home.file."sxrc" = lib.mkForce {
       text = let
         ssnpath = "${config.home.homeDirectory}/${config.xsession.scriptPath}";
       in ''
         #! /usr/bin/env sh
+        logger -t sx "Running startup commands..."
+        ${cfg.startupCommands}
         logger -t sx "Running ${ssnpath}"
         . ${ssnpath}
       '';

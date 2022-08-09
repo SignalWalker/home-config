@@ -24,7 +24,7 @@ in {
   config = lib.mkIf (cfg.enable && cfg.dunst.enable) {
     home.packages = [cfg.dunst.font.package];
     services.dunst = {
-      enable = cfg.notifications.enable;
+      enable = cfg.dunst.enable;
       configFile = "${config.xdg.configHome}/dunst/dunstrc";
       settings = {
         global = {
@@ -51,7 +51,7 @@ in {
           frame_color = "#aaaaaa";
           separator_color = "frame";
           sort = true;
-          font = "${cfg.notifications.font.name} ${toString cfg.notifications.font.size}";
+          font = "${cfg.dunst.font.name} ${toString cfg.dunst.font.size}";
           line_height = 0;
           markup = "full";
           format = "%a\\n<b>%s</b>\\n%b";

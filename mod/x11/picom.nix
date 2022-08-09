@@ -15,11 +15,42 @@ in {
   imports = [];
   config = lib.mkIf (cfg.enable && cfg.compositor.enable) {
     services.picom = {
-      enable = cfg.compositor.enable;
-      package =
-        if impure
+      enable = true;
+      package = if impure
         then (pkgs.wrapSystemApp {app = "picom";})
         else pkgs.picom;
+      settings = {
+        blur = {
+          background = false;
+          kern = "3x3box";
+          background-exclude = [
+            "window_type = 'dock'"
+            "window_type = 'desktop'"
+            "_GTK_FRAME_EXTENTS@:c"
+          ];
+
+        };
+        corner = {
+          radius = 0;
+        };
+        rounded-corners = {
+          exclude = [
+            "window_type = 'dock'"
+            "window_type = 'desktop'"
+          ];
+        };
+        fading = false;
+        glx = {
+          no-stencil = true;
+          no-rebind-pixmap = true;
+        };
+        shadow = false;
+        inactive = {
+          opacity = "1.0";
+          opacity-override = false;
+        };
+      };
     };
+    services.X11.xsession.startupCommands = "picom &";
   };
 }

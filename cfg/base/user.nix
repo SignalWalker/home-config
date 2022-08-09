@@ -25,6 +25,9 @@ inputs @ {
     programs.git = {
       userName = "Ash Walker";
       userEmail = config.accounts.email.accounts.primary.address;
+      extraConfig = {
+        merge.conflictStyle = "diff3";
+      };
     };
   };
 }

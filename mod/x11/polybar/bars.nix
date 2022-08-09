@@ -24,17 +24,25 @@ with builtins; let
     cursor-scroll = "ns-resize";
     tray-padding = 0;
     tray-maxsize = 8;
-    font = [
-      "spleen:size=8"
-      "tamzen:fontformat=BDF:size=9"
-      "tamzenforpowerline:fontformat=BDF:size=9"
-      "spleen:size=12"
-      "cozette:size=13"
-      "siji:size=8"
-      "Sarasa Mono J:size=6"
-      "symbola:size=8"
-      "openmoji:style=color,size=8"
-    ];
+    font = let
+      toPango = font @ {name, ...}:
+        concatStringsSep ":" (["${name}"]
+          ++ [(concatStringsSep "," (
+            (std.optional (font.size != null) "size=${toString font.size}")
+            ++ (std.optional (font.format != null) "fontformat=${font.format}")
+            ++ (std.optional (font.style != null) "style=${font.style}")
+            )
+          )]
+        );
+    in
+      (map toPango ((attrValues config.theme.font.bmp)
+        ++ (attrValues config.theme.font.icons.bmp)
+        ++ [
+          (config.theme.font.cjk // {size = 6;})
+          (config.theme.font.icons.monochrome // {size = 8;})
+        ]) ++ [
+          "symbola:size=6"
+        ]);
   };
 in
   std.mapAttrs' (bar: settings: std.nameValuePair "bar/${bar}" (std.recursiveUpdate baseBar settings)) {
