@@ -5,18 +5,29 @@
   lib,
   ...
 }:
-with builtins; {
-  config = {
+with builtins; let
+  std = pkgs.lib;
+  cfg = config.dev.editor.neovim;
+in {
+  options.dev.editor.neovim = with lib; {
+    enable = mkEnableOption "Neovim editor";
+  };
+  imports = [];
+  config = lib.mkIf (cfg.dev.enable && cfg.enable) {
+    systemd.user.sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
     programs.neovim = {
       enable = false;
       package = pkgs.neovim;
     };
-    home.packages = with pkgs;
-      [
-        # neovim
+    home.packages =
+      (std.optional (!config.programs.neovim.enable) config.programs.neovim.package)
+      ++ (with pkgs; [
         tree-sitter
         nvimpager
-      ]
+      ])
       ++ (with pkgs.vimPlugins; [
         packer-nvim
         # editorconfig-nvim

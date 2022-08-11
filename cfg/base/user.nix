@@ -21,12 +21,9 @@ inputs @ {
       personal = {
         address = "ash@ashwalker.net";
       };
-    };
-    programs.git = {
-      userName = "Ash Walker";
-      userEmail = config.accounts.email.accounts.primary.address;
-      extraConfig = {
-        merge.conflictStyle = "diff3";
+      business = {
+        address = "signalgarden@gmail.com";
+        flavor = "gmail.com";
       };
     };
   };
