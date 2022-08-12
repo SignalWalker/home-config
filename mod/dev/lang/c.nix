@@ -14,6 +14,10 @@ in {
       type = types.attrsOf types.anything;
       default = pkgs.llvmPackages_14;
     };
+    linker = mkOption {
+      type = types.str;
+      default = "lld";
+    };
   };
   imports = [];
   config = lib.mkIf (config.dev.enable && cfg.enable) {
@@ -29,6 +33,9 @@ in {
       CC = "clang";
       CXX = "clang++";
       CMAKE_EXPORT_COMPILE_COMMANDS = "ON";
+      LDFLAGS = "-fuse-ld=${cfg.linker}";
+      CC_LD = cfg.linker; # meson
+      CXX_LD = cfg.linker; # meson
     };
   };
 }
