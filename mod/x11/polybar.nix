@@ -30,8 +30,8 @@ in {
       };
       settings = let
         colors = {
-          background = "#2222";
-          background-alt = "#2222";
+          background = "#AA222222";
+          background-alt = "#AA222222";
           foreground = "#dfdfdf";
           foreground-alt = "#555";
           foreground-notice = "#7979df";

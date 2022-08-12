@@ -3,6 +3,7 @@
   pkgs,
   utils,
   lib,
+  impure ? false,
   ...
 }:
 with builtins; let
@@ -13,7 +14,7 @@ in {
     enable = mkEnableOption "Neovim editor";
   };
   imports = [];
-  config = lib.mkIf (cfg.dev.enable && cfg.enable) {
+  config = lib.mkIf (config.dev.enable && cfg.enable) {
     systemd.user.sessionVariables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
@@ -23,7 +24,7 @@ in {
       package = pkgs.neovim;
     };
     home.packages =
-      (std.optional (!config.programs.neovim.enable) config.programs.neovim.package)
+      (std.optional (!impure && !config.programs.neovim.enable) config.programs.neovim.package)
       ++ (with pkgs; [
         tree-sitter
         nvimpager

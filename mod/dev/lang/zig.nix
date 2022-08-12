@@ -8,7 +8,7 @@ with builtins; let
   std = pkgs.lib;
   cfg = config.dev.lang.zig;
 in {
-  options.dev.lang.rust = with lib; {
+  options.dev.lang.zig = with lib; {
     enable = mkEnableOption "Zig language";
   };
   imports = [];

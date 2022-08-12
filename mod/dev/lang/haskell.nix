@@ -14,9 +14,9 @@ in {
   imports = [];
   config = lib.mkIf (config.dev.enable && cfg.enable) {
     home.packages = with pkgs; [
-      ghc
-      stack
-      cabal-install
+      # ghc
+      # stack
+      # cabal-install
       haskell-language-server
       ormolu
     ];

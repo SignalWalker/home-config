@@ -6,7 +6,7 @@
 with builtins; {
   config = {
     home.sessionPath = [
-      "${home}/.local/bin"
+      "${config.home.homeDirectory}/.local/bin"
     ];
     home.sessionVariables = config.systemd.user.sessionVariables;
   };

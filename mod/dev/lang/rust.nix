@@ -7,7 +7,7 @@
 with builtins; let
   std = pkgs.lib;
   cfg = config.dev.lang.rust;
-  toml = pkgs.formats.toml;
+  toml = pkgs.formats.toml {};
 in {
   options.dev.lang.rust = with lib; {
     enable = mkEnableOption "Rust language";
@@ -26,6 +26,10 @@ in {
         type = toml.type;
         default = {};
       };
+      linker = mkOption {
+        type = types.str;
+        default = "lld";
+      };
     };
   };
   imports = [];
@@ -35,8 +39,8 @@ in {
       CARGO_HOME = cfg.cargo.home;
     };
     home.packages = with pkgs; [
-      rustup
-      config.dev.lang.c.llvmPackages.clang
+      # rustup
+      # config.dev.lang.c.llvmPackages.clang
       # latest.rustChannels.nightly.rustup
     ];
     home.sessionPath = [ "${cfg.cargo.home}/bin" ];
@@ -46,7 +50,7 @@ in {
     dev.lang.rust.cargo.config = {
       target."x86_64-unknown-linux-gnu" = {
         linker = "clang";
-        rustflags = [ "-Clink-arg=-fuse-ld=lld" "-Zshare-generics=y" ];
+        rustflags = [ "-Clink-arg=-fuse-ld=${cfg.cargo.linker}" "-Zshare-generics=y" ];
       };
       profile."release" = {
         lto = "thin";

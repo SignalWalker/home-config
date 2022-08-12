@@ -11,19 +11,19 @@ in {
   options.dev.lang.c = with lib; {
     enable = mkEnableOption "C/C++ language family";
     llvmPackages = mkOption {
-      type = types.package;
+      type = types.attrsOf types.anything;
       default = pkgs.llvmPackages_14;
     };
   };
   imports = [];
   config = lib.mkIf (config.dev.enable && cfg.enable) {
     home.packages = [
-      cfg.llvmPackages.clang
-      cfg.llvmPackages.clang-manpages
+      # cfg.llvmPackages.clang
+      # cfg.llvmPackages.clang-manpages
     ] ++ (with pkgs; [
-      cmake
-      cmake-format
-      cmake-language-server
+      # cmake
+      # cmake-format
+      # cmake-language-server
     ]);
     systemd.user.sessionVariables = {
       CC = "clang";

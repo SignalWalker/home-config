@@ -6,14 +6,14 @@
 }:
 with builtins; let
   std = pkgs.lib;
-  cfg = config.dev.ccache;
+  cfg = config.dev.cache;
 in {
-  options.dev.ccache = with lib; {
+  options.dev.cache = with lib; {
     enable = mkEnableOption "global caching for C/C++/Rust compiler artifacts";
     cache = {
       path = mkOption {
         type = types.str;
-        default = "${xdg.cacheHome}/sccache";
+        default = "${config.xdg.cacheHome}/sccache";
       };
       maxSize = mkOption {
         type = types.str;

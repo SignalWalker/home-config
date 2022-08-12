@@ -14,7 +14,8 @@ in {
     dev = {
       enable = true;
       editor.neovim.enable = true;
-      ccache.enable = true;
+      cache.enable = true;
+      linker.enable = true;
       lang.c.enable = true;
       lang.haskell.enable = true;
       lang.js.enable = true;
