@@ -51,7 +51,7 @@ in {
     dev.lang.rust.cargo.config = {
       target."x86_64-unknown-linux-gnu" = {
         linker = "clang";
-        rustflags = [ "-Clink-arg=-fuse-ld=${cfg.cargo.linker}" "-Clinker-plugin-lto=y" "-Zshare-generics=y" ];
+        rustflags = [ "-Clink-arg=-fuse-ld=${cfg.cargo.linker}" "-Zshare-generics=y" ];
       };
       profile."release" = {
         lto = true;
