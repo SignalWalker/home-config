@@ -20,6 +20,6 @@ in {
       haskell-language-server
       ormolu
     ];
-    home.sessionPath = [ "${config.home.homeDirectory}/.cabal/bin" ];
+    home.sessionPath = ["${config.home.homeDirectory}/.cabal/bin"];
   };
 }

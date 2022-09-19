@@ -9,7 +9,7 @@ with builtins; let
   cfg = config.dev.lang.haskell;
 in {
   options.dev.git = with lib; {
-    enable = (mkEnableOption "Git configuration") // { default = true; };
+    enable = (mkEnableOption "Git configuration") // {default = true;};
   };
   imports = [];
   config = lib.mkIf (config.dev.enable && cfg.enable) {

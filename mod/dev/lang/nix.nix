@@ -9,7 +9,7 @@ with builtins; let
   cfg = config.dev.lang.nix;
 in {
   options.dev.lang.nix = with lib; {
-    enable = (mkEnableOption "Nix language") // { default = true; };
+    enable = (mkEnableOption "Nix language") // {default = true;};
   };
   imports = [
     ./nix/templates.nix

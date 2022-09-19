@@ -45,10 +45,10 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     #   inputs.archive.follows = "archive";
     # };
-    modloader64 = {
-      url = github:signalwalker/modloader64.nix;
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # modloader64 = {
+    #   url = github:signalwalker/modloader64.nix;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     ## misc
     statix = {
       # url = git+https://git.peppe.rs/languages/statix;
@@ -85,16 +85,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # custom modules
-    wayland = {
-      url = github:signalwalker/hm-wayland;
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.alejandra.follows = "alejandra";
-    };
-    zeal = {
-      url = github:signalwalker/hm-zeal;
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.alejandra.follows = "alejandra";
-    };
+    # wayland = {
+    #   url = github:signalwalker/hm-wayland;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.alejandra.follows = "alejandra";
+    # };
+    # zeal = {
+    #   url = github:signalwalker/hm-zeal;
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.alejandra.follows = "alejandra";
+    # };
   };
 
   outputs = inputs @ {
@@ -187,7 +187,7 @@
           mkDefaultOverlayList = system:
             (self.lib.mkOverlayList system (attrValues overlayInputs))
             ++ [
-              mozilla.overlays.rust
+              # mozilla.overlays.rust
               mozilla.overlays.firefox
             ];
           mkBaseModule = {
@@ -211,11 +211,11 @@
             };
             modules =
               [
-                inputs.modloader64.homeManagerModules.default
+                # inputs.modloader64.homeManagerModules.default
                 inputs.wired.homeManagerModules.default
                 inputs.ash-scripts.homeManagerModules.default
-                inputs.wayland.homeManagerModules.default
-                inputs.zeal.homeManagerModules.default
+                # inputs.wayland.homeManagerModules.default
+                # inputs.zeal.homeManagerModules.default
               ]
               ++ (map (file: import file) (utils.listFiles ./mod));
           };

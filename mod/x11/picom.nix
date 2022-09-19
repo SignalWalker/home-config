@@ -1,4 +1,4 @@
-inputs@{
+inputs @ {
   config,
   pkgs,
   lib,
@@ -16,7 +16,8 @@ in {
   config = lib.mkIf (cfg.enable && cfg.compositor.enable) {
     services.picom = {
       enable = true;
-      package = if impure
+      package =
+        if impure
         then (pkgs.wrapSystemApp {app = "picom";})
         else pkgs.picom;
       settings = {
@@ -28,7 +29,6 @@ in {
             "window_type = 'desktop'"
             "_GTK_FRAME_EXTENTS@:c"
           ];
-
         };
         corner = {
           radius = 0;

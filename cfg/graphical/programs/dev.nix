@@ -14,7 +14,7 @@ in {
   config = {
     home.packages =
       (with pkgs; [
-      ])
+        ])
       ++ (std.optionals (!impure) [
         pkgs.neovide
       ]);

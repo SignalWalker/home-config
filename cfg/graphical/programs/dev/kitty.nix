@@ -37,8 +37,13 @@ inputs @ {
         then (pkgs.wrapSystemApp {app = "kitty";})
         else pkgs.kitty;
       environment = {};
-      font = let font = (config.theme.font.mono // { size = 10; }); in {
-        inherit (font) name package size;
+      font = let
+        font = config.theme.font.mono // {size = 10;};
+      in {
+        # inherit (font) name package size;
+        name = "Sarasa Term J";
+        package = pkgs.sarasa-gothic;
+        size = 10;
       };
       theme = "Gruvbox Material Dark Hard";
       settings = {

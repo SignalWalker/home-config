@@ -21,14 +21,16 @@ in {
   };
   imports = [];
   config = lib.mkIf (config.dev.enable && cfg.enable) {
-    home.packages = [
-      # cfg.llvmPackages.clang
-      # cfg.llvmPackages.clang-manpages
-    ] ++ (with pkgs; [
-      # cmake
-      # cmake-format
-      # cmake-language-server
-    ]);
+    home.packages =
+      [
+        # cfg.llvmPackages.clang
+        # cfg.llvmPackages.clang-manpages
+      ]
+      ++ (with pkgs; [
+        # cmake
+        # cmake-format
+        # cmake-language-server
+      ]);
     systemd.user.sessionVariables = {
       CC = "clang";
       CXX = "clang++";

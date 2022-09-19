@@ -121,19 +121,21 @@ in {
       # lib.theme.selAttrs = set: keys: foldl' (acc: key: acc // { ${key} = set.${key}; }) {} keys;
     }
     (lib.mkIf cfg.enable {
-      home.packages = map (font: font.package) ([
-          cfg.font.sans
-          cfg.font.serif
-          cfg.font.mono
-          cfg.font.icons.color
-          cfg.font.icons.monochrome
-        ]);
-        # ++ (attrValues cfg.font.bmp)
-        # ++ (attrValues cfg.font.icons.bmp));
+      home.packages = map (font: font.package) [
+        cfg.font.sans
+        cfg.font.serif
+        cfg.font.mono
+        cfg.font.icons.color
+        cfg.font.icons.monochrome
+      ];
+      # ++ (attrValues cfg.font.bmp)
+      # ++ (attrValues cfg.font.icons.bmp));
       fonts.fontconfig.enable = true;
       gtk = {
         enable = true;
-        font = let font = config.theme.font.sans; in {
+        font = let
+          font = config.theme.font.sans;
+        in {
           inherit (font) name package;
         };
         gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";

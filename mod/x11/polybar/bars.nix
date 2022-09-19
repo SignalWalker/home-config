@@ -26,23 +26,27 @@ with builtins; let
     tray-maxsize = 8;
     font = let
       toPango = font @ {name, ...}:
-        concatStringsSep ":" (["${name}"]
-          ++ [(concatStringsSep "," (
-            (std.optional (font.size != null) "size=${toString font.size}")
-            ++ (std.optional (font.format != null) "fontformat=${font.format}")
-            ++ (std.optional (font.style != null) "style=${font.style}")
+        concatStringsSep ":" (
+          ["${name}"]
+          ++ [
+            (
+              concatStringsSep "," (
+                (std.optional (font.size != null) "size=${toString font.size}")
+                ++ (std.optional (font.format != null) "fontformat=${font.format}")
+                ++ (std.optional (font.style != null) "style=${font.style}")
+              )
             )
-          )]
+          ]
         );
-    in
-      (map toPango ((attrValues config.theme.font.bmp)
+    in (map toPango ((attrValues config.theme.font.bmp)
         ++ (attrValues config.theme.font.icons.bmp)
         ++ [
           (config.theme.font.cjk // {size = 6;})
           (config.theme.font.icons.monochrome // {size = 8;})
-        ]) ++ [
-          "symbola:size=6"
-        ]);
+        ])
+      ++ [
+        "symbola:size=6"
+      ]);
   };
 in
   std.mapAttrs' (bar: settings: std.nameValuePair "bar/${bar}" (std.recursiveUpdate baseBar settings)) {
